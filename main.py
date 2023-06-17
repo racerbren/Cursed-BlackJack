@@ -134,44 +134,102 @@ def main_menu() -> str:
         WINDOW.blit(multi, (X_MID + 170, Y_MID - 100))
         
         pygame.display.update()
+
+
+# def multi_menu() -> str:
+#     run = True
+#     while run:
+#         CLOCK.tick(FPS)
+
+#         WINDOW.fill('white')
+#         create_button = pygame.draw.rect(WINDOW, 'black', [X_MID - 420, Y_MID - 150, 300, 300], 10, 10)
+#         join_button = pygame.draw.rect(WINDOW, 'black', [X_MID + 120, Y_MID - 150, 300, 300], 10, 10)
+
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 run  = False
+#             if event.type == pygame.MOUSEBUTTONUP:
+#                 if create_button.collidepoint(event.pos):
+#                     return "create"
+#                 if join_button.collidepoint(event.pos):
+#                     return "join"
+
+#         create_image = pygame.image.load(os.path.join('Resources', 'create.png'))
+#         create = pygame.transform.smoothscale(create_image, (200, 200))
+#         create_text = FONT.render('Create Room', True, 'black')
+#         WINDOW.blit(create_text, (X_MID - 410, Y_MID + 150))
         
+#         join_image = pygame.image.load(os.path.join('Resources', 'join.png'))
+#         join = pygame.transform.smoothscale(join_image, (200, 200))
+#         join_text = FONT.render('Join Room', True, 'black')
+#         WINDOW.blit(join_text, (X_MID + 150, Y_MID + 150))
+        
+#         title_text = FONT.render('Multi-Player Game', True, 'black')
+#         WINDOW.blit(title_text, (X_MID - (title_text.get_width() / 2), Y_MID - 275))
+        
+#         WINDOW.blit(create, (X_MID - 370, Y_MID - 100))
+#         WINDOW.blit(join, (X_MID + 170, Y_MID - 100))
+
+#         pygame.display.update()
+#     return choice
+
+
+def multi_lobby():
+    run = True
+    while run:
+        CLOCK.tick(FPS)
+
+        WINDOW.fill('white')
+        
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run  = False
+            if event.type == pygame.MOUSEBUTTONUP:
+                if start_button.collidepoint(event.pos):
+                    run = False
+        
+        pygame.display.update()
     
 
 if __name__ == "__main__":
     
     mode = main_menu()
-    
-    player = Hand("Player1", [])
-    dealer = Hand("Dealer", [])
-    players = [player, dealer]
-    main_deck = Deck([])
 
-    main_deck.create_deck()
+    if mode == "single":
+        player = Hand("Player1", [])
+        dealer = Hand("Dealer", [])
+        players = [player, dealer]
+
+        main_deck = Deck([])
+        main_deck.create_deck()
+        main_deck.shuffle()
+        main_deck.deal(players)
+
+        game(players)
     
-    main_deck.shuffle()
-    main_deck.deal(players)
-    
-    game(players)
-    
-    end_text = ""
-    player_bust = player.get_total() > 21
-    
-    if not player_bust:
-        while dealer.get_total() <= 16:
-            main_deck.hit(dealer)
-        end_text = endgame(player, dealer)
-    else:
-        end_text = "You bust. You lose."
-    
-    run = True
-    reveal = True
-    active = False
-    while run:
-        CLOCK.tick(FPS)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-        animate(players, reveal, active, end_text)
+        end_text = ""
+        player_bust = player.get_total() > 21
+        
+        if not player_bust:
+            while dealer.get_total() <= 16:
+                main_deck.hit(dealer)
+            end_text = endgame(player, dealer)
+        else:
+            end_text = "You bust. You lose."
+        
+        run = True
+        reveal = True
+        active = False
+        while run:
+            CLOCK.tick(FPS)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+            animate(players, reveal, active, end_text)
+
+    elif mode == "multi":
+        multi_lobby()
     
     pygame.quit()
     
