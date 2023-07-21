@@ -52,3 +52,4 @@ class Deck():
         for item in range(0, len(self.deck)):
             deck_values += f"{self.deck[item]}" + "\n"
         return deck_values + f"size: {len(self.deck)}"
+        

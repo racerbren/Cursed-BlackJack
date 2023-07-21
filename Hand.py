@@ -18,11 +18,11 @@ class Hand():
         posx = 590          #X and Y positions of the user's first card. The Y value is changed to 10 as seen below if the player is the dealer.
         posy = 560
         iter = 1
-        if self.name == "Dealer":
+        if self.name != "Player":
             posy = 10
         if not reveal:
             for card in self.hand:
-                if self.name == "Dealer":
+                if self.name != "Player":
                     image = pygame.image.load(os.path.join('Resources', 'blue.png'))
                     if iter == 1:
                         image = pygame.image.load(os.path.join('Resources', f'{card.id}'))

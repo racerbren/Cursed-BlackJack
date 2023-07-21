@@ -12,3 +12,4 @@ class Card():
     def __str__(self):
         return f"{self.value} {self.color} {self.suit} || ID: {self.id}"
 
+ 
