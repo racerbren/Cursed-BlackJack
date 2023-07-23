@@ -27,6 +27,8 @@ class Game:
             self.p2Went = True
         elif self.moves[player].upper() == "HIT":
             self.deck.hit(self.players[player])
+        elif self.moves[player].upper() == "REPLAY":
+            self.votecount += 1
 
 
     def connected(self):
@@ -48,6 +50,8 @@ class Game:
         self.deck.create_deck()
         self.deck.shuffle()
         self.deck.deal(self.players)
+
+        self.votecount = 0
 
         self.p1Went = False
         self.p2Went = False

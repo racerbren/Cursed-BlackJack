@@ -150,6 +150,8 @@ def main_menu() -> str:
 
 
 def multi_endgame(game, player, other):
+    """This endgame() function is meant for multiplayer games only as players in multiplayer games are treated as an integer either 0 or 1 
+    rather than a player hand like in single player games"""
     win = game.players[player].get_total() > game.players[other].get_total() and game.players[player].get_total() < 22
     draw = game.players[player].get_total() == game.players[other].get_total() and game.players[other].get_total != 21
     lose = (game.players[player].get_total() < game.players[other].get_total() and game.players[other].get_total() < 22) or game.players[other].get_total == 21
@@ -170,11 +172,11 @@ def redraw_window(win, game, player, reveal, active, end_text):
         p.draw(WINDOW, reveal)
     if game.get_turn() == player:
             draw_buttons(game.players[player], active, end_text)
-            if game.players[player].get_total() >= 21:
+            if game.players[player].get_total() >= 21:              #If the player already has blackjack or has reached 21 points, then end their turn
                 n.send("stand")
 
     elif game.get_turn() != player:
-        total_text = FONT.render(f'Total: {game.players[player].get_total()}', True, 'white')
+        total_text = FONT.render(f'Total: {game.players[player].get_total()}', True, 'white')     #This ensures that the current player's points are always visible to them
         WINDOW.blit(total_text, (50, 616))
     
     pygame.display.update()
@@ -204,7 +206,9 @@ def multi_game(player):
                     n.send(action_buttons[0].text)            #If player clicks hit, then add a card from the deck to player's hand
                 if action_buttons[1].click(event.pos):
                     n.send(action_buttons[1].text)
-        if not (game.connected()):
+                if action_buttons[2].click(event.pos):          #To be added in the future so people can replay multiplayer games easier and faster
+                    n.send("replay")
+        if not (game.connected()):                              #If the game is not created yet then wait for another player and create a "waiting room"
                 CLOCK.tick(FPS)
                 WINDOW.fill('white')
                 text = FONT.render("Waiting for player...", True, "black")
@@ -217,14 +221,12 @@ def multi_game(player):
             if game.bothWent():
                 active = False
                 reveal = True
-                other = n.getOtherPlayer()
+                other = n.getOtherPlayer()                      #This function makes it easier for endgame to refer to the player who is not running this client
 
                 if game.players[player].get_total() > 21:
                     end_text = str(f"You busted!")
-
                 elif game.players[player].get_total() == 21:
                     end_text = str(f"You win!")
-                
                 else:
                     end_text = multi_endgame(game, player, other)
                 

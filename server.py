@@ -28,7 +28,7 @@ def threaded_client(conn, player, gameID):
     reply = ""
 
     while True:
-        data = conn.recv(4096).decode()
+        data = conn.recv(4096).decode()     #Input is stored as an encoded string which is decoded here
         if gameID in games:
             game = games[gameID]
             if not data:
@@ -37,7 +37,7 @@ def threaded_client(conn, player, gameID):
                 if data == "reset":
                     pass
                 elif data != "get":
-                    game.play(player, data)
+                    game.play(player, data)     #Treat player input such as button clicks as a "move" they make which is sent from the client network to the server and back to all clients
                 reply = game
                 conn.sendall(pickle.dumps(reply))
         else:
@@ -58,7 +58,7 @@ while True:
 
     IDCount += 1
     player = 0
-    gameID = (IDCount - 1) // 2
+    gameID = (IDCount - 1) // 2         #If more than 2 players connect to the server, create a new game for them to play in
 
     if IDCount % 2 == 1:
         games[gameID] = Game(gameID)
